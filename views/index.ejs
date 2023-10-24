@@ -6,12 +6,12 @@
     </head>
     <body>
         <table>
-            <% users.forEach(function(user) { %>
+            <% personas.forEach(function(persona) { %>
             <tr>
-                <th id="nameTitle">名前<%= user.name %></th>
-                <th id="emailTitle">email<%= user.email %></th>
-                <th><a href="/edit/<%= user.id %>">更新</a></th>
-                <th><a href="/delete/<%= user.id %>">削除</a></th>
+                <th id="nameTitle">名前<%= persona.name %></th>
+                <th id="emailTitle">email<%= persona.email %></th>
+                <th><a href="/edit/<%= persona.id %>">更新</a></th>
+                <th><a href="/delete/<%= persona.id %>">削除</a></th>
             </tr>
             <% }); %>
         </table>
@@ -30,7 +30,7 @@
         <p id="name"></p>
         <p id="email"></p>
 
-        <p id="personasList"></p>
+
         <script type="text/javascript">
 
             // 参考例
@@ -62,21 +62,16 @@
             let pText = document.getElementById('pText');
             pText.insertAdjacentHTML('beforeend', `${objectFit[0].name}`)
 
-            let personas = JSON.parse('<%= JSON.stringify(personas) %>'.replace(/&#34;/g, '"'));
-            let personasList =document.getElementById('personasList')
-            personasList.insertAdjacentHTML('beforeend', `${personas}`)
-
 
             function alertName() {
-                let users = JSON.parse('<%= JSON.stringify(users) %>'.replace(/&#34;/g, '"'));
-                console.log(users)
+                let personas = JSON.parse('<%= JSON.stringify(personas) %>'.replace(/&#34;/g, '"'));
                 let textBox = document.getElementById('textBox');
                 let name = document.getElementById('name');
                 let email = document.getElementById('email');
-                for (let i = 0; i < users.length; i++) {
-                    if (textBox.value === `${users[i].id}`) {
-                        name.innerHTML = `${users[i].name}`;
-                        email.innerHTML = `${users[i].email}`;
+                for (let i = 0; i < personas.length; i++) {
+                    if (textBox.value === `${personas[i].id}`) {
+                        name.innerHTML = `${personas[i].name}`;
+                        email.innerHTML = `${personas[i].email}`;
                         return;
                     }else{
                         name.innerHTML = "";
