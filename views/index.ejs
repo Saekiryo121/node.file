@@ -64,7 +64,7 @@
 
             let personas = JSON.parse('<%= JSON.stringify(personas) %>'.replace(/&#34;/g, '"'));
             let personasList =document.getElementById('personasList')
-            personasList.innerHTML = `${personas}`;
+            personasList.insertAdjacentHTML('beforeend', `${personas}`)
 
 
             function alertName() {

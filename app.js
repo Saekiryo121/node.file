@@ -36,7 +36,7 @@ app.get("/personas", (req, res) => {
   con.query(sql, function (err, result, fields) {
     if (err) throw err;
     res.render("index", {
-      personas: result,
+      personas: result
     });
   });
 });
