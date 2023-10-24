@@ -17,6 +17,30 @@ const con = mysql.createConnection({
   database: "express_db",
 });
 
+app.get("/personas", (req, res) => {
+  const sql = "SELECT * FROM personas";
+
+  app.post("/personas", (req, res) => {
+    const sql = "INSERT INTO personas SET ?";
+    con.query(sql, req.body, function (err, result, fields) {
+      if (err) throw err;
+      console.log(result);
+      res.redirect("/personas");
+    });
+  });
+
+  app.get("/create-persona", (req, res) => {
+    res.sendFile(path.join(__dirname, "html/personas-form.html"));
+  });
+
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+    res.render("index", {
+      personas: result,
+    });
+  });
+});
+
 // mysqlからデータを持ってくる
 app.get("/", (req, res) => {
   const sql = "select * from users";
@@ -110,26 +134,5 @@ app.get("/delete/:id", (req, res) => {
     res.redirect("/");
   });
 });
-
-app.get('/personas', (req, res) => {
-  const sql = 'SELECT * FROM personas';
-  con.query(sql, function (err, result, fields) {
-    if (err) throw err;
-    res.render('index', { personas: result });
-  });
-});
-
-  app.post("/personas", (req, res) => {
-    const sql = "INSERT INTO personas SET ?";
-    con.query(sql, req.body, function (err, result, fields) {
-      if (err) throw err;
-      console.log(result);
-      res.redirect("/personas");
-    });
-  });
-
-  app.get("/create-persona", (req, res) => {
-    res.sendFile(path.join(__dirname, "html/personas-form.html"));
-  });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
