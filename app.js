@@ -1,31 +1,36 @@
-const path = require('path');
-const express = require('express');
-const ejs = require('ejs');
+const path = require("path");
+const express = require("express");
+const ejs = require("ejs");
 const app = express();
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const port = 3000;
 
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const mysql = require('mysql2');
+const mysql = require("mysql2");
 
 const con = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'RyoArata0213',
-  database: 'express_db'
+  host: "localhost",
+  user: "root",
+  password: "RyoArata0213",
+  database: "express_db",
 });
 
 // mysqlからデータを持ってくる
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   const sql = "select * from users";
   // 参考例
   const num = 10000;
   let tex = "hello";
   let items = ["hello", "hello", "hello"];
-  let objectItems = [{ name: "s.chiba", email: "s.chiba@gmail.com"
-}, { name: "t.kosuge", email: "t.kosuge@gmail.com"}, { name: "m.chiba", email: "m.chiba@gmail.com"}, { name: "t.suzuki", email: "t.suzuki@gmail.com"}, { name: "t.hasegawa", email: "t.hasegawa@gmail.com"}];
+  let objectItems = [
+    { name: "s.chiba", email: "s.chiba@gmail.com" },
+    { name: "t.kosuge", email: "t.kosuge@gmail.com" },
+    { name: "m.chiba", email: "m.chiba@gmail.com" },
+    { name: "t.suzuki", email: "t.suzuki@gmail.com" },
+    { name: "t.hasegawa", email: "t.hasegawa@gmail.com" },
+  ];
   // 基礎課題
   /* ==========従来通りJavaScriptの要領で書いてください。==========
     ここで記載する内容はブラウザに出力するための情報のみになります。上記参考例のconst num = 10000;のように
@@ -47,23 +52,23 @@ app.get('/', (req, res) => {
     name: t.hasegawa, email: t.hasegawa@gmail.com
   */
   // ==========ここまでの範囲で書くようにしましょう。==========
-// 51行目あたりに追加
-app.post('/', (req, res) => {
-  const sql = "INSERT INTO users SET ?"
-  con.query(sql, req.body, function(err, result, fields) {
-    if (err) throw err;
-    console.log(result);
-    res.redirect('/');
+  // 51行目あたりに追加
+  app.post("/", (req, res) => {
+    const sql = "INSERT INTO users SET ?";
+    con.query(sql, req.body, function (err, result, fields) {
+      if (err) throw err;
+      console.log(result);
+      res.redirect("/");
+    });
   });
-});
 
-app.get('/create', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html/form.html'))
-});
+  app.get("/create", (req, res) => {
+    res.sendFile(path.join(__dirname, "html/form.html"));
+  });
 
   con.query(sql, function (err, result, fields) {
     if (err) throw err;
-    res.render('index', {
+    res.render("index", {
       users: result,
       // ⓵ こちらはapp.jsで宣言した変数をindex.ejsのscriptタグ内で使用するために登録する場所になっています。
       /*
@@ -73,39 +78,58 @@ app.get('/create', (req, res) => {
       number: num,
       text: tex,
       item: items,
-      objectItem: objectItems
+      objectItem: objectItems,
     });
   });
 });
 
-app.get('/edit/:id', (req, res) => {
+app.get("/edit/:id", (req, res) => {
   const sql = "SELECT * FROM users WHERE id = ?";
   con.query(sql, [req.params.id], function (err, result, fields) {
     if (err) throw err;
-    res.render('edit', {
-      user: result
+    res.render("edit", {
+      user: result,
     });
   });
 });
 
-app.post('/update/:id', (req, res) => {
+app.post("/update/:id", (req, res) => {
   const sql = "UPDATE users SET ? WHERE id = " + req.params.id;
   con.query(sql, req.body, function (err, result, fields) {
     if (err) throw err;
     console.log(result);
-    res.redirect('/');
+    res.redirect("/");
   });
 });
 
-app.get('/delete/:id', (req, res) => {
+app.get("/delete/:id", (req, res) => {
   const sql = "DELETE FROM users WHERE id = ?";
-  con.query(
-    sql, [req.params.id],
-    function (err, result, fields) {
+  con.query(sql, [req.params.id], function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+    res.redirect("/");
+  });
+});
+
+app.get('/personas', (req, res) => {
+  const sql = 'SELECT * FROM personas';
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+    res.render('index', { personas: result });
+  });
+});
+
+  app.post("/personas", (req, res) => {
+    const sql = "INSERT INTO personas SET ?";
+    con.query(sql, req.body, function (err, result, fields) {
       if (err) throw err;
       console.log(result);
-      res.redirect('/');
+      res.redirect("/personas");
     });
-});
+  });
+
+  app.get("/create-persona", (req, res) => {
+    res.sendFile(path.join(__dirname, "html/personas-form.html"));
+  });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

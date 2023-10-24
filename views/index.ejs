@@ -29,6 +29,14 @@
         <button id="submitButton">表示</button>
         <p id="name"></p>
         <p id="email"></p>
+
+        <ul id="personasList">
+            <% personas.forEach(function(persona) { %>
+                <li>
+                    <%= persona.name %> - <%= persona.email %>
+                </li>
+            <% }); %>
+        </ul>
         <script type="text/javascript">
 
             // 参考例
@@ -59,6 +67,14 @@
             let objectFit = JSON.parse('<%= JSON.stringify(objectItem) %>'.replace(/&#34;/g, '"'));
             let pText = document.getElementById('pText');
             pText.insertAdjacentHTML('beforeend', `${objectFit[0].name}`)
+
+            let personas = JSON.parse('<%= JSON.stringify(personas) %>'.replace(/&#34;/g, '"'));
+            let ul = document.getElementById('personasList');
+            personas.forEach(function (persona) {
+                let li = document.createElement('li');
+                li.textContent = `${persona.name} - ${persona.email}`;
+                ul.appendChild(li);
+            });
 
 
             function alertName() {
