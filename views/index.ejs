@@ -11,7 +11,8 @@
             }
 
             th,
-            td {
+            td,
+            .th {
                 border: 1px solid #dddddd;
                 text-align: left;
                 padding: 8px;
@@ -56,7 +57,7 @@
             </thead>
             <tbody>
                 <% personas.forEach(function(persona) { %>
-                    <tr class="persona-row">
+                    <tr class="persona-row" data-persona-id="<%= persona.id %>">
                         <td>
                             <%= persona.name %>
                         </td>
@@ -82,14 +83,46 @@
                             <a href="/edit/<%= persona.id %>">更新</a>
                             <a href="/delete/<%= persona.id %>">削除</a>
                         </td>
+                        <td>
+                            <button class="select-button" data-persona-id="<%= persona.id %>">選択</button>
+                        </td>
                     </tr>
                     <% }); %>
             </tbody>
         </table>
         <p><a href="/create">ユーザーの追加</a></p>
+        <div>
+            <h2>選択した情報一覧</h2>
+            <table id="selectedInfo">
+                <thead>
+                    <tr>
+                        <th>名前</th>
+                        <th>Email</th>
+                        <th>読み仮名</th>
+                        <th>性別</th>
+                        <th>電話番号</th>
+                        <th>仕事場</th>
+                        <th>世帯数</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedInfoBody">
+                </tbody>
+            </table>
+        </div>
         <script type="text/javascript">
             let clickButton = document.getElementById('clickButton');
             clickButton.addEventListener('click', filterData);
+
+            const selectButtons = document.querySelectorAll('.select-button');
+
+            let selectedData = [];
+
+            selectButtons.forEach((button) => {
+                button.addEventListener('click', function () {
+                    const personaId = button.getAttribute('data-persona-id');
+                    selectPersona(personaId);
+                });
+            });
 
             function filterData() {
                 let filteredTextBox = document.getElementById('filteredTextBox');
@@ -111,6 +144,57 @@
                     });
                 }
             }
+
+    function selectPersona(id) {
+        let selectedRow = document.querySelector(`.persona-row[data-persona-id="${id}"]`);
+
+        const name = selectedRow.querySelector('td:nth-child(1)').textContent;
+        const email = selectedRow.querySelector('td:nth-child(2)').textContent;
+        const kanaName = selectedRow.querySelector('td:nth-child(3)').textContent;
+        const gender = selectedRow.querySelector('td:nth-child(4)').textContent;
+        const phone = selectedRow.querySelector('td:nth-child(5)').textContent;
+        const workplace = selectedRow.querySelector('td:nth-child(6)').textContent;
+        const household = selectedRow.querySelector('td:nth-child(7)').textContent;
+        selectedData.push({
+            id: id,
+            name: name,
+            email: email,
+            kanaName: kanaName,
+            gender: gender,
+            phone: phone,
+            workplace: workplace,
+            household: household
+        });
+
+        selectedRow.style.display = 'none';
+
+        updateSelectedInfoList();
+    }
+
+    function updateSelectedInfoList() {
+        let selectedInfoTable = document.getElementById('selectedInfo');
+        let selectedInfoBody = document.getElementById('selectedInfoBody');
+        selectedInfoBody.innerHTML = '';
+
+        selectedData.forEach(function (data) {
+            let newRow = selectedInfoBody.insertRow();
+            let nameCell = newRow.insertCell();
+            let emailCell = newRow.insertCell();
+            let kanaNameCell = newRow.insertCell();
+            let genderCell = newRow.insertCell();
+            let phoneCell = newRow.insertCell();
+            let workplaceCell = newRow.insertCell();
+            let householdCell = newRow.insertCell();
+
+            nameCell.textContent = data.name;
+            emailCell.textContent = data.email;
+            kanaNameCell.textContent = data.kanaName;
+            genderCell.textContent = data.gender;
+            phoneCell.textContent = data.phone;
+            workplaceCell.textContent = data.workplace;
+            householdCell.textContent = data.household;
+        });
+    }
         </script>
     </body>
 </html>
