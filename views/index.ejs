@@ -7,11 +7,9 @@
     <body>
         <input type="text" id="filteredTextBox" placeholder="ここにテキストを入力">
         <button id="clickButton">絞り込み</button>
-        <p id="filteredNames"></p>
-        <p id="filteredEmails"></p>
         <table>
             <% personas.forEach(function(persona) { %>
-                <tr>
+                <tr class="persona-row">
                     <th id="nameTitle">名前：<%= persona.name %>
                     </th>
                     <th id="emailTitle">email：<%= persona.email %>
@@ -71,31 +69,29 @@
             // 例）
             // name: s.chiba
             // email: s.chiba@gmail.com
-            function filterNames() {
-                let personas = JSON.parse('<%= JSON.stringify(personas) %>'.replace(/&#34;/g, '"'));
-                let textBox = document.getElementById('filteredTextBox');
-                let filteredNames = document.getElementById('filteredNames');
-                let filteredEmails = document.getElementById('filteredEmails');
+            let clickButton = document.getElementById('clickButton');
+            clickButton.addEventListener('click', filterData);
 
-                const keyword = textBox.value.toLowerCase();
+            function filterData() {
+                let filteredTextBox = document.getElementById('filteredTextBox');
+                let filterKeyword = filteredTextBox.value.toLowerCase();
 
-                const filteredPersonas = personas.filter(function (persona) {
-                    return persona.name.toLowerCase().includes(keyword);
+                let personaRows = document.querySelectorAll('.persona-row');
+                personaRows.forEach(function (row) {
+                    row.style.display = '';
                 });
 
-                if (filteredPersonas.length > 0) {
-                    const names = filteredPersonas.map(persona => persona.name).join(', ');
-                    const emails = filteredPersonas.map(persona => persona.email).join(', ');
-                    filteredNames.innerHTML = "名前: " + names;
-                    filteredEmails.innerHTML = "Email: " + emails;
-                } else {
-                    filteredNames.innerHTML = "該当する名前はありません";
-                    filteredEmails.innerHTML = "";
+                if (filterKeyword !== '') {
+                    personaRows.forEach(function (row) {
+                        let name = row.querySelector('th').textContent;
+                        if (name.toLowerCase().includes(filterKeyword)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
                 }
             }
-
-            let clickButton = document.getElementById('clickButton');
-            clickButton.addEventListener('click', filterNames);
 
 
             let objectFit = JSON.parse('<%= JSON.stringify(objectItem) %>'.replace(/&#34;/g, '"'));
