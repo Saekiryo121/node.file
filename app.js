@@ -85,17 +85,17 @@ app.get("/", (req, res) => {
 });
 
 app.get("/edit/:id", (req, res) => {
-  const sql = "SELECT * FROM users WHERE id = ?";
+  const sql = "SELECT * FROM personas WHERE id = ?";
   con.query(sql, [req.params.id], function (err, result, fields) {
     if (err) throw err;
     res.render("edit", {
-      user: result,
+      persona: result,
     });
   });
 });
 
 app.post("/update/:id", (req, res) => {
-  const sql = "UPDATE users SET ? WHERE id = " + req.params.id;
+  const sql = "UPDATE personas SET ? WHERE id = " + req.params.id;
   con.query(sql, req.body, function (err, result, fields) {
     if (err) throw err;
     console.log(result);
@@ -104,7 +104,7 @@ app.post("/update/:id", (req, res) => {
 });
 
 app.get("/delete/:id", (req, res) => {
-  const sql = "DELETE FROM users WHERE id = ?";
+  const sql = "DELETE FROM personas WHERE id = ?";
   con.query(sql, [req.params.id], function (err, result, fields) {
     if (err) throw err;
     console.log(result);

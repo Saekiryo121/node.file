@@ -5,22 +5,32 @@
         <title>User list</title>
     </head>
     <body>
+        <input type="text" id="filteredTextBox" placeholder="ここにテキストを入力">
+        <button id="clickButton">絞り込み</button>
+        <p id="filteredNames"></p>
+        <p id="filteredEmails"></p>
         <table>
             <% personas.forEach(function(persona) { %>
-            <tr>
-                <th id="nameTitle">名前：<%= persona.name %></th>
-                <th id="emailTitle">email：<%= persona.email %></th>
-                <th id="emailTitle">読み仮名：<%= persona.kana_name %></th>
-                <th id="emailTitle">性別：<%= persona.gender %></th>
-                <th id="emailTitle">電話番号：<%= persona.phone %></th>
-                <th id="emailTitle">仕事場：<%= persona.workplace %></th>
-                <th id="emailTitle">世帯数：<%= persona.household %></th>
-                <th><a href="/edit/<%= persona.id %>">更新</a></th>
-                <th><a href="/delete/<%= persona.id %>">削除</a></th>
-            </tr>
-            <% }); %>
+                <tr>
+                    <th id="nameTitle">名前：<%= persona.name %>
+                    </th>
+                    <th id="emailTitle">email：<%= persona.email %>
+                    </th>
+                    <th id="kanaNameTitle">読み仮名：<%= persona.kana_name %>
+                    </th>
+                    <th id="genderTitle">性別：<%= persona.gender %>
+                    </th>
+                    <th id="phoneTitle">電話番号：<%= persona.phone %>
+                    </th>
+                    <th id="workplaceTitle">仕事場：<%= persona.workplace %>
+                    </th>
+                    <th id="houseTitle">世帯数：<%= persona.household %>
+                    </th>
+                    <th><a href="/edit/<%= persona.id %>">更新</a></th>
+                    <th><a href="/delete/<%= persona.id %>">削除</a></th>
+                </tr>
+                <% }); %>
         </table>
-
         <p><a href="/create">ユーザーの追加</a></p>
         <!--こちらに基礎課題で言われてる内容を記述しましょう。ここから-->
         <p id="textTag"></p>
@@ -34,8 +44,6 @@
         <button id="submitButton">表示</button>
         <p id="name"></p>
         <p id="email"></p>
-
-
         <script type="text/javascript">
 
             // 参考例
@@ -63,6 +71,33 @@
             // 例）
             // name: s.chiba
             // email: s.chiba@gmail.com
+            function filterNames() {
+                let personas = JSON.parse('<%= JSON.stringify(personas) %>'.replace(/&#34;/g, '"'));
+                let textBox = document.getElementById('filteredTextBox');
+                let filteredNames = document.getElementById('filteredNames');
+                let filteredEmails = document.getElementById('filteredEmails');
+
+                const keyword = textBox.value.toLowerCase();
+
+                const filteredPersonas = personas.filter(function (persona) {
+                    return persona.name.toLowerCase().includes(keyword);
+                });
+
+                if (filteredPersonas.length > 0) {
+                    const names = filteredPersonas.map(persona => persona.name).join(', ');
+                    const emails = filteredPersonas.map(persona => persona.email).join(', ');
+                    filteredNames.innerHTML = "名前: " + names;
+                    filteredEmails.innerHTML = "Email: " + emails;
+                } else {
+                    filteredNames.innerHTML = "該当する名前はありません";
+                    filteredEmails.innerHTML = "";
+                }
+            }
+
+            let clickButton = document.getElementById('clickButton');
+            clickButton.addEventListener('click', filterNames);
+
+
             let objectFit = JSON.parse('<%= JSON.stringify(objectItem) %>'.replace(/&#34;/g, '"'));
             let pText = document.getElementById('pText');
             pText.insertAdjacentHTML('beforeend', `${objectFit[0].name}`)
@@ -78,7 +113,7 @@
                         name.innerHTML = `${personas[i].name}`;
                         email.innerHTML = `${personas[i].email}`;
                         return;
-                    }else{
+                    } else {
                         name.innerHTML = "";
                         email.innerHTML = "";
                     }
