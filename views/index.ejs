@@ -8,8 +8,13 @@
         <table>
             <% personas.forEach(function(persona) { %>
             <tr>
-                <th id="nameTitle">名前<%= persona.name %></th>
-                <th id="emailTitle">email<%= persona.email %></th>
+                <th id="nameTitle">名前：<%= persona.name %></th>
+                <th id="emailTitle">email：<%= persona.email %></th>
+                <th id="emailTitle">読み仮名：<%= persona.kana_name %></th>
+                <th id="emailTitle">性別：<%= persona.gender %></th>
+                <th id="emailTitle">電話番号：<%= persona.phone %></th>
+                <th id="emailTitle">仕事場：<%= persona.workplace %></th>
+                <th id="emailTitle">世帯数：<%= persona.household %></th>
                 <th><a href="/edit/<%= persona.id %>">更新</a></th>
                 <th><a href="/delete/<%= persona.id %>">削除</a></th>
             </tr>
