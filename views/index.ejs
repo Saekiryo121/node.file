@@ -108,21 +108,83 @@
                 <tbody id="selectedInfoBody">
                 </tbody>
             </table>
+            <button id="statisticsButton">統計情報表示</button>
+            <div id="statisticsResults">
+                <h2>統計情報</h2>
+                <p id="genderStatistics">性別統計: </p>
+                <p id="workplaceStatistics">仕事場統計: </p>
+                <p id="householdStatistics">世帯数統計: </p>
+            </div>
         </div>
         <script type="text/javascript">
             let clickButton = document.getElementById('clickButton');
             clickButton.addEventListener('click', filterData);
 
             const selectButtons = document.querySelectorAll('.select-button');
-
-            let selectedData = [];
-
             selectButtons.forEach((button) => {
                 button.addEventListener('click', function () {
                     const personaId = button.getAttribute('data-persona-id');
                     selectPersona(personaId);
                 });
             });
+
+            const statisticsButton = document.getElementById('statisticsButton');
+            statisticsButton.addEventListener('click', showStatistics);
+
+            let selectedData = [];
+
+            function showStatistics() {
+                const genderStatistics = document.getElementById('genderStatistics');
+                const workplaceStatistics = document.getElementById('workplaceStatistics');
+                const householdStatistics = document.getElementById('householdStatistics');
+
+                // 統計情報をリセット
+                genderStatistics.textContent = "性別統計: 男性 0, 女性 0";
+                workplaceStatistics.textContent = "仕事場統計:";
+                householdStatistics.textContent = "世帯数統計:";
+
+                let genderCount = {
+                    男性: 0,
+                    女性: 0
+                };
+
+                let workplaceCount = {};
+                let householdCount = {};
+
+                // 選択した情報から統計情報を計算
+                selectedData.forEach(function (data) {
+                    // Genderの統計情報
+                    if (data.gender === "男性") {
+                        genderCount.男性++;
+                    } else if (data.gender === "女性") {
+                        genderCount.女性++;
+                    }
+
+                    if (workplaceCount[data.workplace]) {
+                        workplaceCount[data.workplace]++;
+                    } else {
+                        workplaceCount[data.workplace] = 1;
+                    }
+
+                    if (householdCount[data.household]) {
+                        householdCount[data.household]++;
+                    } else {
+                        householdCount[data.household] = 1;
+                    }
+                });
+
+                // 統計情報を表示
+                genderStatistics.textContent = `性別統計: 男性 ${genderCount.男性}, 女性 ${genderCount.女性}`;
+
+                for (const workplace in workplaceCount) {
+                    workplaceStatistics.textContent += ` ${workplace}: ${workplaceCount[workplace]}人,`;
+                }
+
+                for (const household in householdCount) {
+                    householdStatistics.textContent += ` ${household}: ${householdCount[household]}人,`;
+                }
+            }
+
 
             function filterData() {
                 let filteredTextBox = document.getElementById('filteredTextBox');
@@ -145,56 +207,56 @@
                 }
             }
 
-    function selectPersona(id) {
-        let selectedRow = document.querySelector(`.persona-row[data-persona-id="${id}"]`);
+            function selectPersona(id) {
+                let selectedRow = document.querySelector(`.persona-row[data-persona-id="${id}"]`);
 
-        const name = selectedRow.querySelector('td:nth-child(1)').textContent;
-        const email = selectedRow.querySelector('td:nth-child(2)').textContent;
-        const kanaName = selectedRow.querySelector('td:nth-child(3)').textContent;
-        const gender = selectedRow.querySelector('td:nth-child(4)').textContent;
-        const phone = selectedRow.querySelector('td:nth-child(5)').textContent;
-        const workplace = selectedRow.querySelector('td:nth-child(6)').textContent;
-        const household = selectedRow.querySelector('td:nth-child(7)').textContent;
-        selectedData.push({
-            id: id,
-            name: name,
-            email: email,
-            kanaName: kanaName,
-            gender: gender,
-            phone: phone,
-            workplace: workplace,
-            household: household
-        });
+                const name = selectedRow.querySelector('td:nth-child(1)').textContent;
+                const email = selectedRow.querySelector('td:nth-child(2)').textContent;
+                const kanaName = selectedRow.querySelector('td:nth-child(3)').textContent;
+                const gender = selectedRow.querySelector('td:nth-child(4)').textContent;
+                const phone = selectedRow.querySelector('td:nth-child(5)').textContent;
+                const workplace = selectedRow.querySelector('td:nth-child(6)').textContent;
+                const household = selectedRow.querySelector('td:nth-child(7)').textContent;
+                selectedData.push({
+                    id: id,
+                    name: name,
+                    email: email,
+                    kanaName: kanaName,
+                    gender: gender,
+                    phone: phone,
+                    workplace: workplace,
+                    household: household
+                });
 
-        selectedRow.style.display = 'none';
+                selectedRow.style.display = 'none';
 
-        updateSelectedInfoList();
-    }
+                updateSelectedInfoList();
+            }
 
-    function updateSelectedInfoList() {
-        let selectedInfoTable = document.getElementById('selectedInfo');
-        let selectedInfoBody = document.getElementById('selectedInfoBody');
-        selectedInfoBody.innerHTML = '';
+            function updateSelectedInfoList() {
+                let selectedInfoTable = document.getElementById('selectedInfo');
+                let selectedInfoBody = document.getElementById('selectedInfoBody');
+                selectedInfoBody.innerHTML = '';
 
-        selectedData.forEach(function (data) {
-            let newRow = selectedInfoBody.insertRow();
-            let nameCell = newRow.insertCell();
-            let emailCell = newRow.insertCell();
-            let kanaNameCell = newRow.insertCell();
-            let genderCell = newRow.insertCell();
-            let phoneCell = newRow.insertCell();
-            let workplaceCell = newRow.insertCell();
-            let householdCell = newRow.insertCell();
+                selectedData.forEach(function (data) {
+                    let newRow = selectedInfoBody.insertRow();
+                    let nameCell = newRow.insertCell();
+                    let emailCell = newRow.insertCell();
+                    let kanaNameCell = newRow.insertCell();
+                    let genderCell = newRow.insertCell();
+                    let phoneCell = newRow.insertCell();
+                    let workplaceCell = newRow.insertCell();
+                    let householdCell = newRow.insertCell();
 
-            nameCell.textContent = data.name;
-            emailCell.textContent = data.email;
-            kanaNameCell.textContent = data.kanaName;
-            genderCell.textContent = data.gender;
-            phoneCell.textContent = data.phone;
-            workplaceCell.textContent = data.workplace;
-            householdCell.textContent = data.household;
-        });
-    }
+                    nameCell.textContent = data.name;
+                    emailCell.textContent = data.email;
+                    kanaNameCell.textContent = data.kanaName;
+                    genderCell.textContent = data.gender;
+                    phoneCell.textContent = data.phone;
+                    workplaceCell.textContent = data.workplace;
+                    householdCell.textContent = data.household;
+                });
+            }
         </script>
     </body>
 </html>
