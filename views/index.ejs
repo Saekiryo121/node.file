@@ -3,34 +3,90 @@
     <head>
         <meta charset="UTF-8">
         <title>User list</title>
+        <style>
+            table {
+                width: 90%;
+                border-collapse: collapse;
+                margin: 100px auto;
+            }
+
+            th,
+            td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+            th {
+                background-color: #f2f2f2;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            a {
+                text-decoration: none;
+                color: #0070c9;
+            }
+
+            .width {
+                margin-left: 5%;
+                margin-top: 50px;
+            }
+        </style>
     </head>
     <body>
-        <input type="text" id="filteredTextBox" placeholder="ここにテキストを入力">
-        <button id="clickButton">絞り込み</button>
+        <div class="width">
+            <input type="text" id="filteredTextBox" placeholder="ここにテキストを入力">
+            <button id="clickButton">絞り込み</button>
+        </div>
         <table>
-            <% personas.forEach(function(persona) { %>
-                <tr class="persona-row">
-                    <th id="nameTitle">名前：<%= persona.name %>
-                    </th>
-                    <th id="emailTitle">email：<%= persona.email %>
-                    </th>
-                    <th id="kanaNameTitle">読み仮名：<%= persona.kana_name %>
-                    </th>
-                    <th id="genderTitle">性別：<%= persona.gender %>
-                    </th>
-                    <th id="phoneTitle">電話番号：<%= persona.phone %>
-                    </th>
-                    <th id="workplaceTitle">仕事場：<%= persona.workplace %>
-                    </th>
-                    <th id="houseTitle">世帯数：<%= persona.household %>
-                    </th>
-                    <th><a href="/edit/<%= persona.id %>">更新</a></th>
-                    <th><a href="/delete/<%= persona.id %>">削除</a></th>
+            <thead>
+                <tr>
+                    <th>名前</th>
+                    <th>Email</th>
+                    <th>読み仮名</th>
+                    <th>性別</th>
+                    <th>電話番号</th>
+                    <th>仕事場</th>
+                    <th>世帯数</th>
+                    <th>操作</th>
                 </tr>
-                <% }); %>
+            </thead>
+            <tbody>
+                <% personas.forEach(function(persona) { %>
+                    <tr class="persona-row">
+                        <td>
+                            <%= persona.name %>
+                        </td>
+                        <td>
+                            <%= persona.email %>
+                        </td>
+                        <td>
+                            <%= persona.kana_name %>
+                        </td>
+                        <td>
+                            <%= persona.gender %>
+                        </td>
+                        <td>
+                            <%= persona.phone %>
+                        </td>
+                        <td>
+                            <%= persona.workplace %>
+                        </td>
+                        <td>
+                            <%= persona.household %>
+                        </td>
+                        <td>
+                            <a href="/edit/<%= persona.id %>">更新</a>
+                            <a href="/delete/<%= persona.id %>">削除</a>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
         </table>
         <p><a href="/create">ユーザーの追加</a></p>
-        
         <script type="text/javascript">
             let clickButton = document.getElementById('clickButton');
             clickButton.addEventListener('click', filterData);
@@ -46,7 +102,7 @@
 
                 if (filterKeyword !== '') {
                     personaRows.forEach(function (row) {
-                        let name = row.querySelector('th').textContent;
+                        let name = row.querySelector('td').textContent;
                         if (name.toLowerCase().includes(filterKeyword)) {
                             row.style.display = '';
                         } else {
