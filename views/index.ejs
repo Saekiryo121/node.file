@@ -123,67 +123,82 @@
             const selectButtons = document.querySelectorAll('.select-button');
             selectButtons.forEach((button) => {
                 button.addEventListener('click', function () {
-                    const personaId = button.getAttribute('data-persona-id');
+                    let personaId = button.getAttribute('data-persona-id');
                     selectPersona(personaId);
                 });
             });
 
-            const statisticsButton = document.getElementById('statisticsButton');
+            let statisticsButton = document.getElementById('statisticsButton');
             statisticsButton.addEventListener('click', showStatistics);
 
             let selectedData = [];
 
+            let genderCount = {
+                男性: 0,
+                女性: 0
+            };
+
+            let workplaceCount = {};
+
+            let householdCount = {};
+
             function showStatistics() {
-                const genderStatistics = document.getElementById('genderStatistics');
-                const workplaceStatistics = document.getElementById('workplaceStatistics');
-                const householdStatistics = document.getElementById('householdStatistics');
+                let genderStatistics = document.getElementById('genderStatistics');
+                let workplaceStatistics = document.getElementById('workplaceStatistics');
+                let householdStatistics = document.getElementById('householdStatistics');
 
-                // 統計情報をリセット
-                genderStatistics.textContent = "性別統計: 男性 0, 女性 0";
-                workplaceStatistics.textContent = "仕事場統計:";
-                householdStatistics.textContent = "世帯数統計:";
+                console.log("Starting showStatistics...");
 
-                let genderCount = {
-                    男性: 0,
-                    女性: 0
-                };
+                function cleanUpString(str) {
+                    return str.trim();
+                }
 
-                let workplaceCount = {};
-                let householdCount = {};
-
-                // 選択した情報から統計情報を計算
-                selectedData.forEach(function (data) {
-                    // Genderの統計情報
-                    if (data.gender === "男性") {
+                selectedData.forEach(function (persona) {
+                    let cleanedGender = cleanUpString(persona.gender);
+                    if (cleanedGender === "男性") {
                         genderCount.男性++;
-                    } else if (data.gender === "女性") {
+                    } else if (cleanedGender === "女性") {
                         genderCount.女性++;
                     }
 
-                    if (workplaceCount[data.workplace]) {
-                        workplaceCount[data.workplace]++;
-                    } else {
-                        workplaceCount[data.workplace] = 1;
-                    }
+                console.log(persona.gender)
 
-                    if (householdCount[data.household]) {
-                        householdCount[data.household]++;
-                    } else {
-                        householdCount[data.household] = 1;
-                    }
-                });
-
-                // 統計情報を表示
-                genderStatistics.textContent = `性別統計: 男性 ${genderCount.男性}, 女性 ${genderCount.女性}`;
-
-                for (const workplace in workplaceCount) {
-                    workplaceStatistics.textContent += ` ${workplace}: ${workplaceCount[workplace]}人,`;
+                if (workplaceCount[persona.workplace]) {
+                    workplaceCount[persona.workplace]++;
+                } else {
+                    workplaceCount[persona.workplace] = 1;
                 }
 
-                for (const household in householdCount) {
-                    householdStatistics.textContent += ` ${household}: ${householdCount[household]}人,`;
+                if (householdCount[persona.household]) {
+                    householdCount[persona.household]++;
+                } else {
+                    householdCount[persona.household] = 1;
                 }
+            });
+
+            console.log("Gender Count:", genderCount);
+            console.log("Workplace Count:", workplaceCount);
+            console.log("Household Count:", householdCount);
+
+            genderStatistics.textContent = `性別統計: 男性 ${genderCount.男性}, 女性 ${genderCount.女性}`;
+
+            workplaceStatistics.textContent = "仕事場統計: ";
+            for (const workplace in workplaceCount) {
+                workplaceStatistics.textContent += `${workplace} ${workplaceCount[workplace]}人, `;
             }
+
+            householdStatistics.textContent = "世帯数統計: ";
+            for (const household in householdCount) {
+                householdStatistics.textContent += `${household} ${householdCount[household]}人, `;
+            }
+
+            workplaceStatistics.textContent = workplaceStatistics.textContent.slice(0, -2);
+            householdStatistics.textContent = householdStatistics.textContent.slice(0, -2);
+
+            console.log("Finished showStatistics.");
+
+            }
+
 
 
             function filterData() {
