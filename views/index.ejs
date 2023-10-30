@@ -116,6 +116,9 @@
                 <p id="householdStatistics">世帯数統計: </p>
             </div>
         </div>
+        <script>
+           let personas = <%- JSON.stringify(personas) %>;
+          </script>
         <script type="text/javascript">
             let clickButton = document.getElementById('clickButton');
             clickButton.addEventListener('click', filterData);
@@ -134,8 +137,8 @@
             let selectedData = [];
 
             let genderCount = {
-                男性: 0,
-                女性: 0
+                male: 0,
+                female: 0
             };
 
             let workplaceCount = {};
@@ -149,55 +152,45 @@
 
                 console.log("Starting showStatistics...");
 
-                function cleanUpString(str) {
-                    return str.trim();
-                }
-
-                selectedData.forEach(function (persona) {
-                    let cleanedGender = cleanUpString(persona.gender);
-                    if (cleanedGender === "男性") {
-                        genderCount.男性++;
-                    } else if (cleanedGender === "女性") {
-                        genderCount.女性++;
+                personas.forEach(function (persona) {
+                    if (persona.gender === "男性") {
+                        genderCount.male++;
+                    } else if (persona.gender === "女性") {
+                        genderCount.female++;
                     }
 
-                console.log(persona.gender)
+                    if (workplaceCount[persona.workplace]) {
+                        workplaceCount[persona.workplace]++;
+                    } else {
+                        workplaceCount[persona.workplace] = 1;
+                    }
 
-                if (workplaceCount[persona.workplace]) {
-                    workplaceCount[persona.workplace]++;
-                } else {
-                    workplaceCount[persona.workplace] = 1;
+                    if (householdCount[persona.household]) {
+                        householdCount[persona.household]++;
+                    } else {
+                        householdCount[persona.household] = 1;
+                    }
+                });
+                console.log(genderCount.male)
+                genderStatistics.textContent = `性別: 男性 ${genderCount.male}, 女性 ${genderCount.female}`;
+
+                workplaceStatistics.textContent = "仕事場統計: ";
+                for (const workplace in workplaceCount) {
+                    workplaceStatistics.textContent += `${workplace} ${workplaceCount[workplace]} 人, `;
                 }
 
-                if (householdCount[persona.household]) {
-                    householdCount[persona.household]++;
-                } else {
-                    householdCount[persona.household] = 1;
+                householdStatistics.textContent = "世帯数統計: ";
+                for (const household in householdCount) {
+                    householdStatistics.textContent += `${household} ${householdCount[household]} 人, `;
                 }
-            });
 
-            console.log("Gender Count:", genderCount);
-            console.log("Workplace Count:", workplaceCount);
-            console.log("Household Count:", householdCount);
+                workplaceStatistics.textContent = workplaceStatistics.textContent.slice(0, -2);
+                householdStatistics.textContent = householdStatistics.textContent.slice(0, -2);
 
-            genderStatistics.textContent = `性別統計: 男性 ${genderCount.男性}, 女性 ${genderCount.女性}`;
-
-            workplaceStatistics.textContent = "仕事場統計: ";
-            for (const workplace in workplaceCount) {
-                workplaceStatistics.textContent += `${workplace} ${workplaceCount[workplace]}人, `;
+                console.log("Finished showStatistics.");
             }
 
-            householdStatistics.textContent = "世帯数統計: ";
-            for (const household in householdCount) {
-                householdStatistics.textContent += `${household} ${householdCount[household]}人, `;
-            }
 
-            workplaceStatistics.textContent = workplaceStatistics.textContent.slice(0, -2);
-            householdStatistics.textContent = householdStatistics.textContent.slice(0, -2);
-
-            console.log("Finished showStatistics.");
-
-            }
 
 
 
