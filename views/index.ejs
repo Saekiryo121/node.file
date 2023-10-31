@@ -116,8 +116,9 @@
                 <p id="householdStatistics">世帯数統計: </p>
             </div>
         </div>
-        
         <script type="text/javascript">
+            let personas = JSON.parse('<%= JSON.stringify(personas) %>'.replace(/&#34;/g, '"'));
+
             let clickButton = document.getElementById('clickButton');
             clickButton.addEventListener('click', filterData);
 
